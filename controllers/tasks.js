@@ -1,7 +1,7 @@
 const { handleQuerySort } = require('../helpers/handleQuerySort');
 const Task = require('../models/Task');
 
-const getTask = async (req, res) => {
+const getTask = async (req, res, next) => {
   try {
     const sort = req.query.sort ? handleQuerySort(req.query.sort) : { createdAt: -1 }
     const skip =  req.query.skip ? req.query.skip : 0
@@ -10,11 +10,11 @@ const getTask = async (req, res) => {
     res.json({ success: true, tasks });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    next(error)
   }
 }
 
-const createTask = async (req, res) => {
+const createTask = async (req, res, next) => {
   const { title, description, status, priority } = req.body;
 
   // Simple validation
@@ -33,11 +33,11 @@ const createTask = async (req, res) => {
     res.json({ success: true, message: 'Task created successfully', task: newTask });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    next(error)
   }
 }
 
-const updateTask = async (req, res) => {
+const updateTask = async (req, res, next) => {
   const { title, description, status, priority } = req.body;
 
   // Simple validation
@@ -72,11 +72,11 @@ const updateTask = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    next(error)
   }
 }
 
-const deleteTask = async (req, res) => {
+const deleteTask = async (req, res, next) => {
   try {
     const taskDeleteCondition = { _id: req.params.id, user: req.user.id };
     const deletedTask = await Task.findOneAndDelete(taskDeleteCondition);
@@ -91,7 +91,7 @@ const deleteTask = async (req, res) => {
     res.json({ success: true, task: deletedTask });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    next(error)
   }
 }
 

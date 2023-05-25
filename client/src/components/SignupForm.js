@@ -29,7 +29,8 @@ const SignupForm = () => {
       if (response.ok) {
         console.log('Signup successful');
         localStorage.setItem('token', data.token);
-        alert('User created successfully')
+        alert('User created successfully');
+        navigate("/");
       } else {
         console.log(data.message);
       }

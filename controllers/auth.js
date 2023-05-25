@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const jwt = require('jsonwebtoken');
 
-const signUp =  async (req, res) => {
+const signUp =  async (req, res, next) => {
   const { name, email, password } = req.body;
   try {
     let user = await User.findOne({ email });
@@ -26,31 +26,20 @@ const signUp =  async (req, res) => {
         res.json({ token });
       }
     );
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+  } catch (error) {
+    console.error(error.message);
+    next(error)
   }
 }
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
 
-  const { email, password } = req.body;
   try {
-    let user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ msg: 'Invalid Credentials' });
-    }
-    const isPasswordValid = await user.isValidPassword(password)
-    if (!isPasswordValid) {
-      return res.status(400).json({ msg: 'Invalid Credentials' });
-    }
-
     const payload = {
       user: {
-        id: user.id
+        id: req.user.id
       }
     };
-
     jwt.sign(
       payload,
       process.env.TOKEN_SECRET,
@@ -62,9 +51,9 @@ const login = async (req, res) => {
         res.json({ token });
       }
     );
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+  } catch (error) {
+    console.error(error.message);
+    next(error)
   }
 }
 

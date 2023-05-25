@@ -30,4 +30,12 @@ const TaskSchema = new mongoose.Schema({
 });
 TaskSchema.index({ _id: 1, user: 1 }, { unique: true })
 
+TaskSchema.virtual('id').get(function(){
+    return this._id.toHexString();
+});
+
+TaskSchema.set('toJSON', {
+    virtuals: true
+});
+
 module.exports = mongoose.model('Task', TaskSchema);

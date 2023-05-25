@@ -6,6 +6,7 @@ const { getUser, getUsers } = require('../controllers/users');
 const { signUp, login } = require('../controllers/auth');
 const validateResult = require('../middleware/validateResult');
 const { registerValidation, loginValidation } = require('../middleware/authValidation');
+const passport = require('passport');
 
 userRouter
   .route('/')
@@ -14,7 +15,7 @@ userRouter
 
 userRouter
   .route('/login')
-  .post(loginValidation, validateResult, login)
+  .post(loginValidation, validateResult, passport.authenticate('login', { session: false, failWithError: true }), login)
 
 userRouter
   .route('/all')

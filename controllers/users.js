@@ -4,9 +4,9 @@ const getUsers = async (req, res, next) => {
   try {
     const user = await User.find().select('-password');
     res.json(user);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+  } catch (error) {
+    console.error(error.message);
+    next(error)
   }
 }
 
